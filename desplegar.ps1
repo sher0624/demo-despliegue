@@ -1,3 +1,7 @@
+param (
+    [string]$Rutaphp = 'php'
+)
+
 $archivoOrigen = Join-Path  $PSScriptRoot 'origen\index.php'
 $archivoDestino = Join-Path $PSScriptRoot 'pruebas\index.php'
 
