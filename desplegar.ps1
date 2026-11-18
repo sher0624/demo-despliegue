@@ -1,17 +1,19 @@
-param (
-    [string]$Rutaphp = 'php'
+param(
+    [string]$RutaPHP = 'php'
 )
 
-$archivoOrigen = Join-Path  $PSScriptRoot 'origen\index.php'
-$archivoDestino = Join-Path $PSScriptRoot 'pruebas\index.php'
+$archivoOrigen = Join-Path $PSScriptRoot 'origen\index.php'
+$carpetaPruebas = Join-Path $PSScriptRoot 'pruebas'
+$archivoDestino = Join-Path $carpetaPruebas 'index.php'
 
-& 'C:\laragon\bin\php\php-8.4.12-Win32-vs17-x64\php.exe' -l $archivoOrigen
+& $RutaPHP -l $archivoOrigen
 
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "Hay un error de sintaxis no se publico el cambio"
+    Write-Error 'Falló la validación de PHP. No se copió el archivo.'
     exit 1
 }
 
-Copy-Item $archivoOrigen $archivoDestino -Force -ErrorAction stop
-Write-Host "Version publicada en el ambiente de pruebas"
-php -S localhost:8082 -t pruebas
+New-Item -ItemType Directory -Path $carpetaPruebas -Force -ErrorAction Stop | Out-Null
+Copy-Item -LiteralPath $archivoOrigen -Destination $archivoDestino -Force -ErrorAction Stop
+
+Write-Host 'Versión preparada en pruebas/index.php.'
